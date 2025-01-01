@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semester Average Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .semester {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .subject {
+            margin: 5px 0;
+        }
+        .calculate {
+            margin-top: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Semester Average Calculator</h1>
+    <p>Enter grades for each subject in the semesters below, and the averages will be calculated automatically.</p>
+
+    <form id="averageForm">
+        <!-- Generate semesters dynamically using JavaScript -->
+    </form>
+
+    <div class="calculate">
+        <h2 id="overallAverage">Overall Average: -</h2>
+    </div>
+
+    <script>
+        const form = document.getElementById('averageForm');
+
+        // Generate semester inputs
+        for (let semester = 1; semester <= 5; semester++) {
+            const semesterDiv = document.createElement('div');
+            semesterDiv.className = 'semester';
+            semesterDiv.innerHTML = `<h2>Semester ${semester}</h2>`;
+
+            for (let subject = 1; subject <= 16; subject++) {
+                const subjectDiv = document.createElement('div');
+                subjectDiv.className = 'subject';
+                subjectDiv.innerHTML = `
+                    <label for="semester${semester}subject${subject}">Subject ${subject}: </label>
+                    <input type="number" id="semester${semester}subject${subject}" class="semester${semester}" min="0" max="100" placeholder="Enter grade">
+                `;
+                semesterDiv.appendChild(subjectDiv);
+            }
+
+            const semesterAverage = document.createElement('h3');
+            semesterAverage.id = `averageSemester${semester}`;
+            semesterAverage.textContent = `Semester ${semester} Average: -`;
+            semesterDiv.appendChild(semesterAverage);
+
+            form.appendChild(semesterDiv);
+        }
+
+        // Event listener for real-time calculations
+        form.addEventListener('input', () => {
+            let totalOverall = 0;
+            let semesterCount = 0;
+
+            for (let semester = 1; semester <= 5; semester++) {
+                const inputs = document.querySelectorAll(`.semester${semester}`);
+                let total = 0;
+                let count = 0;
+
+                inputs.forEach(input => {
+                    const value = parseFloat(input.value);
+                    if (!isNaN(value)) {
+                        total += value;
+                        count++;
+                    }
+                });
+
+                const semesterAverage = count > 0 ? (total / count).toFixed(2) : '-';
+                document.getElementById(`averageSemester${semester}`).textContent = `Semester ${semester} Average: ${semesterAverage}`;
+
+                if (count > 0) {
+                    totalOverall += parseFloat(semesterAverage);
+                    semesterCount++;
+                }
+            }
+
+            const overallAverage = semesterCount > 0 ? (totalOverall / semesterCount).toFixed(2) : '-';
+            document.getElementById('overallAverage').textContent = `Overall Average: ${overallAverage}`;
+        });
+    </script>
+</body>
+</html>
